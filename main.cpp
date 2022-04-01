@@ -4,6 +4,7 @@
 //  Project: UALR - Programming 2 - Spring 22 - Power Play 10
 //  Created by: Mark McCorkle on 20220401
 //  Based on: Code Provided by Sean Orme
+// 
 //  IDE: CLion 2021.2.3     - UNVERIFIED
 //  IDE: XCode              - UNVERIFIED
 //  IDE: Visual Studio 2022 - VERIFIED
