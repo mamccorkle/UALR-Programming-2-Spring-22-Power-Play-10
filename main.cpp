@@ -17,6 +17,7 @@
 #include <algorithm>
 #include <fstream>
 #include <map>
+#include <memory>
 
 #include "Item.h"
 #include "Object.h"
@@ -24,15 +25,22 @@
 #include "Monster.h"
 
 
-void createMonsters(std::vector<Object*>& objects);
 
-void displayBattle(const std::vector<Object*>& objects);
-void bringOutYourDead(std::vector<Object*>& objects);
+//void createMonsters(std::vector<Object*>& objects);
+void createMonsters(std::vector<std::unique_ptr<Object>>& objects);
+
+//void displayBattle(const std::vector<Object*>& objects);
+void displayBattle(const std::vector<std::unique_ptr<Object>>& objects);
+
+//void bringOutYourDead(std::vector<Object*>& objects);
+void bringOutYourDead(std::vector<std::unique_ptr<Object>>& objects);
 
 
 int main()
 {
-	std::vector<Object*> objects{ new Player() };
+	//std::vector<Object*> objects{ new Player() };;
+	std::vector<std::unique_ptr<Object>> objects{ std::make_unique<Player>() };
+
 	while (objects.front()->getName() == Object::Type::player)
 	{
 		createMonsters(objects);
@@ -49,7 +57,8 @@ int main()
 			{
 				displayBattle(objects);
 				std::cout << std::endl;
-				std::for_each(objects.begin(), objects.end(), [&](Object* object)
+				//std::for_each(objects.begin(), objects.end(), [&](Object* object)
+				std::for_each(objects.begin(), objects.end(), [&]( std::unique_ptr<Object> object )
 					{
 						object->update(objects);
 					});
@@ -78,7 +87,8 @@ int main()
 
 }
 
-void displayBattle(const std::vector<Object*>& objects)
+//void displayBattle(const std::vector<Object*>& objects)
+void displayBattle(const std::vector<std::unique_ptr<Object>>& objects)
 {
 	Object::nameOnly = false;
 
@@ -86,7 +96,8 @@ void displayBattle(const std::vector<Object*>& objects)
 	std::cout << std::endl << "  Monsters: " << std::endl;
 	{
 		int i{ 1 };
-		std::for_each(objects.begin() + 1, objects.end(), [&](const Object* monster)
+		//std::for_each(objects.begin() + 1, objects.end(), [&](const Object* monster)
+		std::for_each(objects.begin() + 1, objects.end(), [&](const std::unique_ptr<Object> monster)
 			{
 				std::cout << "   " << i << ". " << *monster << std::endl;
 
@@ -95,22 +106,26 @@ void displayBattle(const std::vector<Object*>& objects)
 	}
 }
 
-void createMonsters(std::vector<Object*>& objects)
+//void createMonsters(std::vector<Object*>& objects)
+void createMonsters(std::vector<std::unique_ptr<Object>>& objects)
 {
 	std::normal_distribution<double> randomNumMonsters((double)objects.front()->getLevel(), objects.front()->getLevel() / 2.0);
 	objects.resize(std::max(2, (int)randomNumMonsters(Object::engine)));
 	std::generate(objects.begin() + 1, objects.end(), [&]()
 		{
-			return new Monster(objects.front());
+			//return new Monster(objects.front());
+			return std::make_unique<Monster>(objects.front());
 		});
 }
 
-void bringOutYourDead(std::vector<Object*>& objects)
+//void bringOutYourDead(std::vector<Object*>& objects)
+void bringOutYourDead(std::vector<std::unique_ptr<Object>>& objects)
 {
 	Object::nameOnly = true;
 	objects.erase(
 		std::remove_if(objects.begin(), objects.end(),
-			[](Object* object)
+			//[](Object* object)
+			[](std::unique_ptr<Object> object)
 			{
 				if (object->isDead())
 				{

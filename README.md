@@ -8,7 +8,6 @@
 > 
 > `Smart Pointers`
 
-#### 
 
 #### Instructions:
 
@@ -24,7 +23,6 @@
 > 
 > Don't forget to use std:move when needed!
 
-#### 
 
 #### Submission Due Date:
 

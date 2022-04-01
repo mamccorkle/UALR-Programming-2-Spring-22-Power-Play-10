@@ -2,6 +2,7 @@
 #define OBJECT_H
 
 #include <map>
+#include <memory>
 #include <random>
 
 class Object
@@ -17,7 +18,8 @@ public:
 
 	virtual int attack() const = 0;
 	virtual void defend(int damage) = 0;
-	virtual void update(std::vector<Object*> objects) = 0;
+	//virtual void update(std::vector<Object*> objects) = 0;
+	virtual void update(std::vector< std::unique_ptr<Object>> objects) = 0;
 	virtual void print(std::ostream& o) const;
 	bool isDead();
 	Type getName() const;

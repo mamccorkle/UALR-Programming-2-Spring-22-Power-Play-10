@@ -2,7 +2,7 @@
 #include "Monster.h"
 #include "Player.h"
 
-void Monster::update(std::vector<Object*> objects)
+void Monster::update(std::vector<std::unique_ptr<Object>> objects)
 {
 	std::bernoulli_distribution willAttack(.75);
 	if (willAttack(Object::engine))
@@ -18,7 +18,7 @@ void Monster::update(std::vector<Object*> objects)
 	}
 }
 
-Monster::Monster(const Object* player)
+Monster::Monster(const std::unique_ptr<Object> player)
 {
 	//set level based on player level
 	std::normal_distribution<double> monsterLevel((float)player->getLevel(), player->getLevel() / 4.0);

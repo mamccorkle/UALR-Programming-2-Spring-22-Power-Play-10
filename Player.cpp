@@ -39,7 +39,7 @@ void Player::levelUp()
 	}
 }
 
-void Player::update(std::vector<Object*> objects)
+void Player::update(std::vector<std::unique_ptr<Object>> objects)
 {
 	
 	if (objects.size() == 1)

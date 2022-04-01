@@ -1,9 +1,11 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include <memory>
 
 #include "Object.h"
 #include "Item.h"
+
 class Player :
 	public Object
 {
@@ -11,7 +13,8 @@ public:
 	Player();
 
 	void levelUp();
-	void update(std::vector<Object*> objects) override;
+	//void update(std::vector<Object*> objects) override;
+	void update(std::vector<std::unique_ptr<Object>> objects) override;
 
 	int getLevel() const;
 	int getSP() const;
