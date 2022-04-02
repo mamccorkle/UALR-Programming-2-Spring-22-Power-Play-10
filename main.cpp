@@ -25,7 +25,6 @@
 #include "Monster.h"
 
 
-
 //void createMonsters(std::vector<Object*>& objects);
 void createMonsters(std::vector<std::unique_ptr<Object>>& objects);
 
