@@ -21,17 +21,18 @@ void Player::levelUp()
 	//grab new item.
 	std::uniform_int_distribution<int> randomItem(0, (int)Item::Type::numTypes - 1);
 	std::normal_distribution<double> randomBonus((double)level, (double)level / 2);
-	Item* found{ new Item{(Item::Type)randomItem(engine), std::max(1, (int)randomBonus(engine))} };
+	std::unique_ptr<Item> found{ std::make_unique<Item>( (Item::Type)randomItem(engine), std::max(1, (int)randomBonus(engine)) )};
 
 	std::cout << "You found a " << *found << "!!!!" << std::endl;
 	if (
 		auto haveOne{ inventory.find(found->getClassification()) };
 		haveOne == inventory.end()
-		|| *(inventory[found->getClassification()]) < *found
+		|| (*inventory[found->getClassification()]) < *found
 		)
 	{
 		std::cout << "You keep the shiny new toy!" << std::endl;
-		inventory[found->getClassification()] = found;
+		//inventory[found->getClassification()] = found;
+		inventory.insert_or_assign(found->getClassification(), std::move(found));
 	}
 	else
 	{
@@ -39,7 +40,7 @@ void Player::levelUp()
 	}
 }
 
-void Player::update(std::vector<std::unique_ptr<Object>> objects)
+void Player::update(std::vector<std::unique_ptr<Object>>& objects)
 {
 	
 	if (objects.size() == 1)
@@ -143,12 +144,18 @@ void Player::print(std::ostream& o) const
 	}
 }
 
-std::ostream& operator<<(std::ostream& o, const std::map<Item::Type, Item*>& src)
+std::ostream& operator<<(std::ostream& o, const std::map<Item::Type, std::unique_ptr<Item>>& src)
 {
-	std::for_each(src.begin(), src.end(), [&](std::pair<Item::Type, Item*> item)
-		{
-			o << "  " << *(item.second) << std::endl;
-		});
+	//std::for_each(src.begin(), src.end(), [&](std::pair<const Item::Type, std::unique_ptr<Item>> item)
+	//	{
+	//		o << "  " << *(item.second) << std::endl;
+	//	});
+
+	for (const std::pair<const Item::Type, std::unique_ptr<Item>>& item : src)
+	{
+		o << "  " << *item.second << std::endl;
+	}
+
 	return o;
 }
 

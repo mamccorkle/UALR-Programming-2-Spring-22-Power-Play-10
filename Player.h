@@ -14,7 +14,7 @@ public:
 
 	void levelUp();
 	//void update(std::vector<Object*> objects) override;
-	void update(std::vector<std::unique_ptr<Object>> objects) override;
+	void update(std::vector<std::unique_ptr<Object>>& objects) override;
 
 	int getLevel() const;
 	int getSP() const;
@@ -26,9 +26,9 @@ public:
 
 
 private:
-	std::map<Item::Type, Item*> inventory;
+	std::map<Item::Type, std::unique_ptr<Item>> inventory;
 	int SP{ 0 };
 };
 
-std::ostream& operator<< (std::ostream& o, const std::map<Item::Type, Item*>& src);
+std::ostream& operator<< (std::ostream& o, const std::map<Item::Type, std::unique_ptr<Item>>& src);
 #endif // !PLAYER_H

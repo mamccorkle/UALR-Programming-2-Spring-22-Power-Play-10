@@ -39,7 +39,13 @@ void bringOutYourDead(std::vector<std::unique_ptr<Object>>& objects);
 int main()
 {
 	//std::vector<Object*> objects{ new Player() };;
-	std::vector<std::unique_ptr<Object>> objects{ std::make_unique<Player>() };
+	//std::vector<std::unique_ptr<Object>> objects{ std::make_unique<Player>() };
+
+	// A bug is introduced (and prevents compilation) when the "objects" vector is 
+	// initialized with a new instance of a unique pointer to the Player object. To
+	// bypass this, the process was broken into two statements instead of one.
+	std::vector<std::unique_ptr<Object>> objects;
+	objects.push_back(std::make_unique<Player>());
 
 	while (objects.front()->getName() == Object::Type::player)
 	{
@@ -58,7 +64,7 @@ int main()
 				displayBattle(objects);
 				std::cout << std::endl;
 				//std::for_each(objects.begin(), objects.end(), [&](Object* object)
-				std::for_each(objects.begin(), objects.end(), [&]( std::unique_ptr<Object> object )
+				std::for_each(objects.begin(), objects.end(), [&]( std::unique_ptr<Object>& object )
 					{
 						object->update(objects);
 					});
@@ -92,12 +98,12 @@ void displayBattle(const std::vector<std::unique_ptr<Object>>& objects)
 {
 	Object::nameOnly = false;
 
-	std::cout << *(objects.front()) << std::endl;
+	std::cout << *objects.front() << std::endl;
 	std::cout << std::endl << "  Monsters: " << std::endl;
 	{
 		int i{ 1 };
 		//std::for_each(objects.begin() + 1, objects.end(), [&](const Object* monster)
-		std::for_each(objects.begin() + 1, objects.end(), [&](const std::unique_ptr<Object> monster)
+		std::for_each(objects.begin() + 1, objects.end(), [&]( const std::unique_ptr<Object>& monster)
 			{
 				std::cout << "   " << i << ". " << *monster << std::endl;
 
@@ -125,11 +131,10 @@ void bringOutYourDead(std::vector<std::unique_ptr<Object>>& objects)
 	objects.erase(
 		std::remove_if(objects.begin(), objects.end(),
 			//[](Object* object)
-			[](std::unique_ptr<Object> object)
+			[]( const std::unique_ptr<Object>& object )
 			{
 				if (object->isDead())
 				{
-
 					std::cout << *object << " has died!!!" << std::endl << std::endl;
 					return true;
 				}
